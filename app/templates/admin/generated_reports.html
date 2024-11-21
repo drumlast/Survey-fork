@@ -1,0 +1,57 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+    <h2>Список сгенерированных отчетов</h2>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Файл</th>
+                <th>Комитет</th>
+                <th>Опросник</th>
+                <th>Дата создания</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for file in files %}
+                <tr>
+                    <td>{{ file.filename }}</td>
+                    <td>{{ file.committee_name }}</td>
+                    <td>{{ file.survey }}</td>
+                    <td>{{ file.timestamp.strftime('%Y-%m-%d %H:%M:%S') if file.timestamp != 'Неизвестно' else 'Неизвестно' }}</td>
+                    <td>
+                        <a href="{{ url_for('admin.download_report', filename=file.filename) }}" class="btn btn-primary btn-sm">Скачать</a>
+                        <form action="{{ url_for('admin.delete_generated_report', filename=file.filename) }}" method="post" style="display:inline;">
+                            <input id="csrf_token" name="csrf_token" type="hidden" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Пагинация -->
+    <nav aria-label="pagination">
+        <ul class="pagination">
+            <li class="page-item {% if page <= 1 %}disabled{% endif %}">
+                <a class="page-link" href="{{ url_for('admin.view_generated_reports', page=page - 1) }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% for p in range(1, total_pages + 1) %}
+                <li class="page-item {% if page == p %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.view_generated_reports', page=p) }}">{{ p }}</a>
+                </li>
+            {% endfor %}
+            <li class="page-item {% if page >= total_pages %}disabled{% endif %}">
+                <a class="page-link" href="{{ url_for('admin.view_generated_reports', page=page + 1) }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <a href="{{ url_for('admin.reports') }}" class="btn btn-secondary">Назад к отчетам</a>
+{% endblock %}

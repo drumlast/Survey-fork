@@ -1,0 +1,101 @@
+{% extends "survey/base.html" %}
+
+{% block content %}
+<h2>{{ title }}</h2>
+
+<form method="POST" action="">
+    {{ registration_form.hidden_tag() }}
+    <div>
+        {{ registration_form.iogv.label }} {{ registration_form.iogv() }}
+    </div>
+    <div>
+        {{ registration_form.subdivision.label }} {{ registration_form.subdivision() }}
+    </div>
+    <div>
+        {{ registration_form.post.label }} {{ registration_form.post() }}
+    </div>
+    <div>
+        {{ registration_form.privacy.label }} {{ registration_form.privacy() }}
+    </div>
+
+    <hr>
+
+    
+    <div>
+        <h1 class="text-center">Инструкция по заполнению</h1>
+        <p>Уважаемы респондент!</p>
+        <p>Вопросы по оценке цифровой зрелости разделены на шесть направлений (разделов):</p>
+        <ol>
+            <li>Организационная культура и управление (вопросы 1-13)</li>
+            <li>Кадры (вопросы 14-28)</li>
+            <li>Процессы (вопросы 29-37)</li>
+            <li>Продукты (вопросы 38-48)</li>
+            <li>Данные (вопросы 49-60)</li>
+            <li>Инфраструктура и инструменты (вопросы 61-66)</li>
+        </ol>
+        <p>В разделах представлено 66 вопросов (от 6 до 15 в каждом), необходимо выполнить 2 действия:</p>
+        <ol>
+            <li>выбрать утверждение, которое на Ваш взгляд наиболее точно описывает текущее состояние;</li>
+            <li>использовать подвижную шкалу для точного выбора значения (с разбивкой по уровням, шаг 0,25). Необходимо установить шкалу в соответствии с оценкой, которую Вы выбрали для каждого вопроса.</li>
+        </ol>
+        <p>Модель оценки – дискретная от 0 до 4, где 4 это максимально возможная оценка.</p>
+    
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th rowspan="2">Критерий</th>
+                    <th rowspan="2">Ранг (ваша оценка)</th>
+                    <th colspan="4">Уровень цифровой зрелости</th>
+                </tr>
+                <tr>
+                    <th>0-1</th>
+                    <th>1-2</th>
+                    <th>2-3</th>
+                    <th>3-4</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Степень понимания инструкции по заполнению анкеты по ЦТ</td>
+                    <td></td>
+                    <td>Понимания заполнения нет, либо оно носит фрагментарный характер</td>
+                    <td>Есть общее понимание по заполнению</td>
+                    <td>Понимание по заполнению есть, но существуют вопросы к деталям</td>
+                    <td>Все предельно понятно</td>
+                </tr>
+            </tbody>
+        </table>
+    
+        <ul>
+            <li>да, формулировка полностью соответствует (2,0);</li>
+            <li>скорее да, чем нет (1,75);</li>
+            <li>затрудняюсь ответить (1,5);</li>
+            <li>скорее нет, чем да (1,25);</li>
+            <li>нет, формулировка полностью не соответствует (1,0).</li>
+        </ul>
+    
+        <p>Системный подход при реализации мероприятий по повышению уровня цифровой зрелости на уровне города позволит выполнить точечную настройку существующих государственных информационных систем, внедрить единый подход при переходе от функциональной к процессной модели управления ИОГВ, значительно повысить эффективность при межведомственном взаимодействии, обеспечить направление комплексных заявок на обучение.</p>
+    </div>
+    
+    <hr>
+
+    {{ survey_form.hidden_tag() }}
+    {% for direction in survey_form.directions %}
+        <h3>{{ direction.title.label }}</h3>
+        {% for criterion in direction.criterions %}
+            <div>
+                <h4>{{ criterion.title.label }}</h4>
+                {% for subcriterion in criterion.subcriteria %}
+                    <div>
+                        <label>{{ subcriterion.title.label }} ({{ subcriterion.question_number.data }})</label>
+                        <div>{{ subcriterion.radio_buttons() }}</div>
+                        <div>{{ subcriterion.comments.label }}: {{ subcriterion.comments() }}</div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    {% endfor %}
+    <hr>
+    <button type="submit">{{ survey_form.submit.label }}</button>
+</form>
+{% endblock %}

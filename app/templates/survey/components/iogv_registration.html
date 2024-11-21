@@ -1,0 +1,25 @@
+<div>
+    <h1 class="text-center">Регистрация</h1>
+    <form method="post" id="registrationForm">
+        <div class="mb-3">
+            <label for="committeeSelect" class="form-label">Комитет</label>
+            <select id="committeeSelect" name="committee" class="form-select">
+                {% for committee in committees %}
+                <option value="{{ committee.id }}">{{ committee.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="subdivisionInput" class="form-label">Подразделение</label>
+            <input type="text" id="subdivisionInput" name="subdivision" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label for="postInput" class="form-label">Должность</label>
+            <input type="text" id="postInput" name="post" class="form-control">
+        </div>
+        <div class="form-group form-check mb-3">
+            <input type="checkbox" id="privacyCheckbox" name="privacy" class="form-check-input">
+            <label for="privacyCheckbox" class="form-check-label">Я подтверждаю <a href="/privacy">политику конфиденциальности</a></label>
+        </div>
+    </form>
+</div>

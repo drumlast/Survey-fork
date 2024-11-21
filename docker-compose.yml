@@ -1,0 +1,15 @@
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+      - db-data:/app/app.db
+      - reports-data:/app/reports/json
+    environment:
+      - FLASK_ENV=development
+
+volumes:
+  db-data:
+  reports-data:

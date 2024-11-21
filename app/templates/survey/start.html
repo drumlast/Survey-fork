@@ -1,0 +1,8 @@
+{% extends 'site/base.html' %}
+
+{% block content %}
+{{ super() }}
+    <form id="form" action="{{ url_for('survey.start') }}" method="post">
+        {% include 'site/components/iogv_survey.html' %}
+    </form>
+{% endblock %}

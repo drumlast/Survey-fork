@@ -1,0 +1,118 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+{{ super() }}
+    <h2>Детали отчёта №{{ record.id }}</h2>
+    
+    <div class="container mt-4">
+        <h3>Информация о пользователе</h3>
+        <table class="table table-bordered">
+            <tr>
+                <th>Должность</th>
+                <td>{{ record.user.post }}</td>
+            </tr>
+            <tr>
+                <th>Подразделение</th>
+                <td>{{ record.user.subdivision }}</td>
+            </tr>
+            <tr>
+                <th>Комитет</th>
+                <td>{{ record.user.committee.name }}</td>
+            </tr>
+            <tr>
+                <th>Дата создания</th>
+                <td>{{ record.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            </tr>
+        </table>
+
+        <!-- Список ответов -->
+        <h3>Ответы на вопросы</h3>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>ID</th>
+                    <th>Критерий</th>
+                    <th>Подкритерий</th>
+                    <th>Оценка</th>
+                    <th>Комментарий</th>
+                    <th>Тип ответа</th>
+                    <th>Вес</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for answer in record.answers %}
+                    <tr>
+                        <!-- Порядковый номер ответа -->
+                        <td>{{ loop.index }}</td>
+
+                        <!-- ID ответа -->
+                        <td>{{ answer.id }}</td>
+
+                        <!-- Критерий -->
+                        <td>
+                            {% if answer.criterion %}
+                                {{ answer.criterion.title }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                        <!-- Подкритерий -->
+                        <td>
+                            {% if answer.subcriterion %}
+                                {{ answer.subcriterion.title }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                        <!-- Оценка -->
+                        <td>
+                            {% if answer.answer_value is not none %}
+                                {{ answer.answer_value }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                        <!-- Комментарий -->
+                        <td>
+                            {{ answer.comment or '-' }}
+                        </td>
+
+                        <!-- Тип ответа -->
+                        <td>
+                            {% if answer.criterion and answer.criterion.detailed_response %}
+                                Интервью
+                            {% elif answer.subcriterion and answer.subcriterion.detailed_response %}
+                                Интервью
+                            {% else %}
+                                Оценка
+                            {% endif %}
+                        </td>
+
+                        <!-- Вес -->
+                        <td>
+                            {% if answer.criterion %}
+                                {{ answer.criterion.weight or '-' }}
+                            {% elif answer.subcriterion %}
+                                {{ answer.subcriterion.weight or '-' }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Кнопки действий -->
+        <div class="mt-4">
+            <a href="{{ url_for('admin.reports') }}" class="btn btn-secondary">Назад к списку отчётов</a>
+            <form action="{{ url_for('admin.delete_report', record_id=record.id) }}" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-danger">Удалить отчёт</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+<h1>Редактировать направление</h1>
+<form method="POST">
+    <label for="title">Название:</label>
+    <input type="text" id="title" name="title" value="{{ direction.title }}" required>
+    <button type="submit">Сохранить</button>
+</form>
+{% endblock %}

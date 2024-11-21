@@ -1,0 +1,20 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+<h1>Редактировать опрос: {{ survey.title }}</h1>
+<form method="post" action="{{ url_for('admin.edit_survey', survey_id=survey.id) }}">
+    <div class="mb-3">
+        <label for="title" class="form-label">Название:</label>
+        <input type="text" class="form-control" name="title" value="{{ survey.title }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="slug" class="form-label">Идентификатор URL (slug):</label>
+        <input type="text" class="form-control" name="slug" value="{{ survey.slug }}" required>
+    </div>
+    <div class="mb-3">
+        <label for="introduction" class="form-label">Вступление:</label>
+        <textarea class="form-control" name="introduction">{{ survey.introduction }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+</form>
+{% endblock %}

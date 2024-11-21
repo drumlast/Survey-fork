@@ -1,0 +1,14 @@
+{% extends 'survey/base.html' %}
+{% block content %}
+<div class="container-sm">
+    {% for survey in surveys %}
+        <div class="card m-5">
+            <h5 class="card-header">{{ survey.title }}</h5>
+            <div class="card-body">
+                <p class="card-text">{{ survey.introduction|safe }}</p>
+                <a href="{{ url_for('survey.take_survey', slug=survey.slug) }}" class="btn btn-primary">Пройти опрос</a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

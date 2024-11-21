@@ -1,0 +1,63 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+<h1>Дашбоард</h1>
+<div class="statistics mt-4">
+    <h2>Общая статистика</h2>
+    <ul class="list-group">
+        <li class="list-group-item">Количество пользователей: <strong>{{ user_count }}</strong></li>
+        <li class="list-group-item">Количество комитетов: <strong>{{ committee_count }}</strong></li>
+        <li class="list-group-item">Количество опросов: <strong>{{ survey_count }}</strong></li>
+        <li class="list-group-item">Количество заполненных отчётов: <strong>{{ record_count }}</strong></li>
+        <li class="list-group-item">Количество файлов отчётов: <strong>{{ report_count }}</strong></li>
+    </ul>
+</div>
+
+<div class="reports mt-4">
+    <h2>Управление отчётами</h2>
+    <a href="{{ url_for('admin.generate_reports') }}" class="btn btn-primary mt-2">Сгенерировать тестовые отчёты</a>
+    <a href="{{ url_for('admin.view_generated_reports') }}" class="btn btn-secondary mt-2">Просмотреть отчёты</a>
+</div>
+
+<div class="surveys mt-4">
+    <h2>Список опросов</h2>
+    {% for survey in surveys %}
+    <div class="card mb-3">
+        <div class="card-header">
+            <h3>{{ survey.title }}</h3>
+        </div>
+        <div class="card-body">
+            <p>Количество направлений: <strong>{{ survey.direction_count }}</strong></p>
+            <p>Количество вопросов: <strong>{{ survey.question_count }}</strong></p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="committees mt-4">
+    <h2>Список комитетов</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Название комитета</th>
+                <th>Количество пользователей</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for committee in committees %}
+            <tr>
+                <td>{{ committee.name }}</td>
+                <td>{{ committee.user_count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+<div class="database mt-4">
+    <h2>База данных</h2>
+    <a href="{{ url_for('admin.download_database') }}" class="btn btn-warning mt-2">Скачать базу данных</a>
+</div>
+
+{% endblock %}

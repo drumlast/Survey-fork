@@ -1,0 +1,35 @@
+{% extends 'survey/base.html' %}
+
+{% block content %}
+{{ super() }}
+    <h1 class="text-center">Обратная связь</h1>
+    <form action="{{ url_for('survey.feedback') }}" class="w-100" method="post">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control w-100") }}
+        </div>
+        <div class="form-group">
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control w-100") }}
+        </div>
+        <div class="form-group mb-3">
+            {{ form.message.label(class="form-label") }}
+            {{ form.message(class="form-control w-100") }}
+        </div>
+        <div>
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+    <hr>
+    {% if contact_info %}
+        <p>Если у вас возникли вопросы или предложения, вы можете обратиться по следующим адресам:</p>
+        <ul>
+            <li>Email: {{ contact_info.email }}</li>
+            <li>Телефон: {{ contact_info.phone }}</li>
+        </ul>
+    {% else %}
+        <p>Контактная информация временно недоступна.</p>
+    {% endif %}
+
+{% endblock %}

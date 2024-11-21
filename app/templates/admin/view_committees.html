@@ -1,0 +1,68 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Список комитетов</h1>
+    <div id="committees-list" class="table-responsive">
+        <!-- Комитеты будут загружаться сюда -->
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        function loadCommittees() {
+            $.getJSON("{{ url_for('admin.api_committees') }}", function(data) {
+                var committeesHtml = '<table class="table table-bordered">';
+                committeesHtml += '<thead><tr><th>Название</th><th>Информация</th><th>Действия</th></tr></thead>';
+                committeesHtml += '<tbody>';
+                data.forEach(function(committee) {
+                    if (!committee.parent_id) {
+                        committeesHtml += generateCommitteeHtml(committee);
+                    }
+                });
+                committeesHtml += '</tbody></table>';
+                $('#committees-list').html(committeesHtml);
+            });
+        }
+
+        function generateCommitteeHtml(committee) {
+            return `
+                <tr>
+                    <td>${committee.name}</td>
+                    <td>${committee.info ? committee.info : ''}</td>
+                    <td>
+                        <button class="btn btn-link" onclick="loadSubCommittees(${committee.id})">Подкомитеты</button>
+                    </td>
+                </tr>
+                <tr id="subcommittees-${committee.id}" style="display: none;">
+                    <td colspan="3">
+                        <table class="table table-bordered">
+                            <thead><tr><th>Название</th><th>Информация</th><th>Действия</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </td>
+                </tr>
+            `;
+        }
+
+        window.loadSubCommittees = function(parentId) {
+            var subcommitteeRow = $(`#subcommittees-${parentId}`);
+            if (subcommitteeRow.is(':visible')) {
+                subcommitteeRow.hide();
+                return;
+            }
+
+            $.getJSON(`/admin/api/committees/${parentId}`, function(data) {
+                var subcommitteesHtml = '';
+                data.forEach(function(subcommittee) {
+                    subcommitteesHtml += generateCommitteeHtml(subcommittee);
+                });
+                subcommitteeRow.find('tbody').html(subcommitteesHtml);
+                subcommitteeRow.show();
+            });
+        }
+
+        loadCommittees();
+    });
+</script>
+{% endblock %}

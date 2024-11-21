@@ -1,0 +1,206 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+<h1>{{ survey.title }}</h1>
+<div class="card mb-3">
+    <div class="card-header">
+        Настройки (доп. информация)
+    </div>
+    <div class="card-body">
+        <div>
+            {% if survey.slug %}
+            <p><span class="fw-medium">Идентификатор URL (slug): </span><span>{{ survey.slug }}</span></p>
+            {% endif %}
+            {% for settings in survey.survey_settings %}
+                <p><span class="fw-medium">{{ settings.name }}: </span><span>{{ settings.value }}</span></p>
+            {% endfor %}
+            <a href="#" class="btn btn-primary edit-settings" data-id="{{ survey.id }}">Изменить</a>
+        </div>
+    </div>
+</div>
+<div class="card mb-3">
+    <div class="card-header">
+        Вступление
+    </div>
+    <div class="card-body">
+        <div class="survey_introduction">
+            {{ survey.introduction|safe }}
+        </div>
+        <a href="#" class="btn btn-primary edit-introduction" data-id="{{ survey.id }}">Изменить</a>
+    </div>
+</div>
+<div>
+    <h2>Инструкции:</h2>
+    {% for instruction in survey.survey_instructions %}
+        <div class="card">
+            <div class="card-header">
+                {{ instruction.title }}
+            </div>
+            <div class="card-body">
+                {{ instruction.body_html|safe }}
+                <button type="button" class="btn btn-primary edit-instruction" data-id="{{ instruction.id }}">Редактировать</button>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+<div class="mt-3">
+    <h2 class="text-center">Управление вопросами (таблица)</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th class="" scope="col">Критерий</th>
+                <th class="" scope="col">Подкатегорий</th>
+                <th class="" scope="col">Вес</th>
+                <th class="" scope="col">Вопрос 1</th>
+                <th class="" scope="col">Вопрос 2</th>
+                <th class="" scope="col">Вопрос 3</th>
+                <th class="" scope="col">Вопрос 4</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for direction in survey.directions %}
+            <tr>
+                <td class="direction-title editable-cell text-center" data-type="direction" data-id="{{ direction.id }}" data-title="{{ direction.title }}" data-survey-id="{{ direction.survey_id }}" colspan="7">
+                    <h3>{{ direction.title }}</h3>
+                </td>
+            </tr>
+                {% for criterion in direction.criterions %}
+                    {% if criterion.subcriterions|length > 1 %}
+                        {% for subcriterion in criterion.subcriterions %}
+                            <tr>
+                                {% if loop.first %}
+                                    <td
+                                            class="criterion-title editable-cell"
+                                            data-type="criterion"
+                                            data-id="{{ criterion.id }}"
+                                            data-title="{{ criterion.title }}"
+                                            data-number="{{ criterion.number }}"
+                                            data-question-number="{{ criterion.question_number }}"
+                                            data-weight="{{ criterion.weight }}"
+                                            data-prompt="{{ criterion.prompt }}"
+                                            data-detailed-response="{{ criterion.detailed_response }}"
+                                            data-question="{{ criterion.question }}"
+                                            data-is-interview="{{ criterion.is_interview }}"
+                                            data-direction-id="{{ criterion.direction_id }}"
+                                            rowspan="{{ criterion.subcriterions|length }}"
+                                    >
+                                        {{ criterion.title }}
+                                    </td>
+                                {% endif %}
+                                <td
+                                        class="editable-cell"
+                                        data-type="subcriterion"
+                                        data-id="{{ subcriterion.id }}"
+                                        data-title="{{ subcriterion.title }}"
+                                        data-weight="{{ subcriterion.weight }}"
+                                        data-extended-answer="{{ subcriterion.detailed_response }}"
+                                >
+                                    {{ subcriterion.title }}
+                                </td>
+
+                                <td class="text-center">{{ subcriterion.weight }}</td>
+                                {% for punct in subcriterion.puncts %}
+                                    <td
+                                            class="editable-cell"
+                                            data-type="punct"
+                                            data-id="{{ punct.id }}"
+                                            data-title="{{ punct.title }}"
+                                            data-prompt="{{ punct.prompt }}"
+                                            data-comment="{{ punct.comment }}"
+                                            data-range-min="{{ punct.range_min }}"
+                                            data-range-max="{{ punct.range_max }}"
+                                    >
+                                        {{ punct.title }}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    {% elif criterion.subcriterions|length == 1 %}
+                        <tr>
+                            <td
+                                    class="criterion-title editable-cell"
+                                    data-type="criterion"
+                                    data-id="{{ criterion.id }}"
+                                    data-title="{{ criterion.title }}"
+                                    data-weight="{{ criterion.subcriterions[0].weight }}"
+                                    data-extended-answer="{{ criterion.subcriterions[0].detailed_response }}"
+                                    colspan="2"
+                            >
+                                {{ criterion.title }}
+                            </td>
+                            <td class="text-center">{{ criterion.subcriterions[0].weight }}</td>
+                            {% for punct in criterion.subcriterions[0].puncts %}
+                                <td
+                                        class="editable-cell"
+                                        data-type="punct"
+                                        data-id="{{ punct.id }}"
+                                        data-title="{{ punct.title }}"
+                                        data-prompt="{{ punct.prompt }}"
+                                        data-comment="{{ punct.comment }}"
+                                        data-range-min="{{ punct.range_min }}"
+                                        data-range-max="{{ punct.range_max }}"
+                                >
+                                    {{ punct.title }}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% elif criterion.subcriterions|length == 0 %}
+                        <tr>
+                            <td
+                                    class="criterion-title editable-cell"
+                                    data-type="criterion"
+                                    data-id="{{ criterion.id }}"
+                                    data-title="{{ criterion.title }}"
+                                    data-question-number="{{ criterion.question_number }}"
+                                    data-weight="{{ criterion.weight }}"
+                                    data-prompt="{{ criterion.prompt }}"
+                                    data-detailed-response="{{ criterion.detailed_response }}"
+                                    data-question="{{ criterion.question }}"
+                                    data-is-interview="{{ criterion.is_interview }}"
+                                    data-direction-id="{{ criterion.direction_id }}"
+                                    colspan="2"
+                            >
+                                {{ criterion.number }} {{ criterion.title }}
+                            </td>
+                            <td class="text-center">{{ criterion.weight }}</td>
+                            {% if criterion.question %}
+                                <td colspan="4">
+                                    {{ criterion.question }}
+                                </td>
+                            {% else %}
+                                <td colspan="4">Вопрос не добавлен к критерию.</td>
+                            {% endif %}
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Редактирование</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="deleteItem">Удалить</button>
+                <button type="button" class="btn btn-primary" id="saveChanges">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function(){
+      $("table").colResizable();
+    });
+</script>
+<script src="{{ url_for('static', filename='script/questions.js') }}"></script>
+{% endblock %}

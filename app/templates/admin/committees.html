@@ -1,0 +1,106 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+<div>
+    <h1>Добавить комитет</h1>
+    <form method="post" id="committee-form">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.info.label(class="form-label") }}
+            {{ form.info(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.parent_id.label(class="form-label") }}
+            {{ form.parent_id(class="form-select", id="parent_id") }}
+        </div>
+        <div>
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+
+    <h1>Список комитетов</h1>
+    <div id="committees-list" class="table-responsive">
+        <!-- Комитеты будут загружаться сюда -->
+    </div>
+
+    <!-- Модальное окно для редактирования комитета -->
+    <div class="modal fade" id="editCommitteeModal" tabindex="-1" aria-labelledby="editCommitteeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editCommitteeModalLabel">Редактировать комитет</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-committee-form">
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            <label for="edit-name" class="form-label">Название комитета</label>
+                            <input type="text" class="form-control" id="edit-name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-info" class="form-label">Информация о комитете</label>
+                            <textarea class="form-control" id="edit-info" name="info"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-parent-id" class="form-label">Родительский комитет</label>
+                            <select class="form-select" id="edit-parent-id" name="parent_id"></select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для подтверждения удаления -->
+    <div class="modal fade" id="deleteCommitteeModal" tabindex="-1" aria-labelledby="deleteCommitteeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteCommitteeModalLabel">Удалить комитет</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Вы уверены, что хотите удалить этот комитет и все его подкомитеты?</p>
+                    <button type="button" class="btn btn-danger" id="confirm-delete">Удалить</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для добавления подкомитета -->
+    <div class="modal fade" id="addSubcommitteeModal" tabindex="-1" aria-labelledby="addSubcommitteeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addSubcommitteeModalLabel">Добавить подкомитет</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="add-subcommittee-form">
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            <label for="subcommittee-name" class="form-label">Название подкомитета</label>
+                            <input type="text" class="form-control" id="subcommittee-name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="subcommittee-info" class="form-label">Информация о подкомитете</label>
+                            <textarea class="form-control" id="subcommittee-info" name="info"></textarea>
+                        </div>
+                        <input type="hidden" name="parent_id" id="parent-committee-id">
+                        <button type="submit" class="btn btn-primary">Добавить подкомитет</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='script/committees.js') }}"></script>
+{% endblock %}

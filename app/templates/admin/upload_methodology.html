@@ -1,0 +1,10 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+{{ super() }}
+<form class="mb-3" action="{{ url_for('admin.upload_methodology') }}" method="post" enctype="multipart/form-data">
+    <label for="file" class="form-label">Загрузите методологию</label>
+    <input type="file" id="file" name="file" class="form-control">
+    <button type="submit" class="btn btn-primary mb-3">Загрузить файл</button>
+</form>
+{% endblock %}

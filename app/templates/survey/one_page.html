@@ -1,0 +1,148 @@
+{% extends 'survey/base.html' %}
+{% block content %}
+<form method="post" id="surveyForm">
+    {{ form.hidden_tag() }}
+    {{ form.csrf_token }}
+    <div>
+        <h1 class="text-center">Регистрация</h1>
+        <div>
+            <div class="mb-3">
+                <label for="committeeSelect" class="form-label">Комитет</label>
+                <select id="committeeSelect" name="committee" class="form-select">
+                    {% for committee in committees %}
+                    <option value="{{ committee.id }}">{{ committee.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="subdivisionInput" class="form-label">Подразделение</label>
+                <input type="text" id="subdivisionInput" name="subdivision" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="postInput" class="form-label">Должность</label>
+                <input type="text" id="postInput" name="post" class="form-control">
+            </div>
+            <div class="form-group form-check mb-3">
+                <input type="checkbox" id="privacyCheckbox" name="privacy" class="form-check-input">
+                <label for="privacyCheckbox" class="form-check-label">Я подтверждаю <a href="/privacy">политику конфиденциальности</a></label>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        {% for instruction in survey.survey_instructions %}
+            <p>{{ instruction.body_html|safe }}</p>
+        {% endfor %}
+    </div>
+    <h1>Опрос</h1>
+    {% for direction in survey.directions %}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>{{ direction.title }}</h3>
+            </div>
+            <div class="card-body">
+                {% for criterion in direction.criterions %}
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <h4>{{ criterion.title }}</h4>
+                        </div>
+                        <div class="card-body">
+                            {% if criterion.is_interview %}
+                                <div class="interview-section mb-4">
+                                    <label for="criterion_{{ criterion.question_number }}_response" class="form-label">
+                                        {{ criterion.question or "Дайте развернутый ответ на вопрос." }}
+                                    </label>
+                                    <textarea class="form-control"
+                                              id="criterion_{{ criterion.question_number }}_response"
+                                              name="criterion_{{ criterion.question_number }}_response"
+                                              rows="4"
+                                              required></textarea>
+
+                                    <label for="criterion_{{ criterion.question_number }}_range" class="form-label mt-2">
+                                        Оцените от 0 до 4
+                                    </label>
+                                    <input type="range" class="form-range"
+                                           id="criterion_{{ criterion.question_number }}_range"
+                                           name="criterion_{{ criterion.question_number }}-range"
+                                           min="0" max="4" step="0.25"
+                                           oninput="displayRangeValue(this.value, 'criterion_{{ criterion.question_number }}_range_value')">
+                                    <span id="criterion_{{ criterion.question_number }}_range_value">2.0</span>
+                                </div>
+                            {% endif %}
+
+
+                            {% for subcriterion in criterion.subcriterions %}
+                                <div class="subcriterion mb-4">
+                                    <p><strong>{{ subcriterion.title }} - Вес: {{ subcriterion.weight }}</strong></p>
+
+                                    {% if subcriterion.is_interview %}
+                                        <div class="interview-section mb-4">
+                                            <label for="subcriterion_{{ subcriterion.question_number }}_response" class="form-label">
+                                                {{ subcriterion.question or "Дайте развёрнутый ответ на вопрос." }}
+                                            </label>
+                                            <textarea class="form-control"
+                                                      id="subcriterion_{{ subcriterion.question_number }}_response"
+                                                      name="subcriterion_{{ subcriterion.question_number }}_response"
+                                                      rows="4"
+                                                      required></textarea>
+                                        </div>
+                                    {% else %}
+                                        {% for punct in subcriterion.puncts %}
+                                            <div class="punct form-check">
+                                                <input type="radio"
+                                                       id="score_{{ punct.id }}"
+                                                       name="{{ subcriterion.question_number }}-radio"
+                                                       value="{{ punct.range_min }}"
+                                                       class="form-check-input"
+                                                       data-question-id="{{ subcriterion.question_number }}"
+                                                       onchange="printRadioValue(this.value, this.id)"
+                                                       required>
+                                                <label class="form-check-label" for="score_{{ punct.id }}"
+                                                       {% if punct.prompt %} title="{{ punct.prompt }}" {% endif %}>
+                                                    {{ punct.title }} ({{ punct.range_min }} - {{ punct.range_max }})
+                                                </label>
+                                            </div>
+                                        {% endfor %}
+
+                                        <div class="d-flex align-items-center range-question form-check form-check-inline">
+                                            <input type="range"
+                                                   class="m-2"
+                                                   onchange="printRangeValue(this.value, this.id)"
+                                                   oninput="printRangeValue(this.value, this.id)"
+                                                   data-question-id="{{ subcriterion.question_number }}"
+                                                   name="{{ subcriterion.question_number }}-range"
+                                                   id="{{ subcriterion.question_number }}-range"
+                                                   value="0"
+                                                   min="0"
+                                                   max="1"
+                                                   step="0.25">
+                                            <label id="{{ subcriterion.question_number }}-range-label">Ваша градация: 0</label>
+                                        </div>
+                                    {% endif %}
+
+                                    <div id="{{ subcriterion.question_number }}-comment-container"></div>
+                                    <button type="button"
+                                            id="{{ subcriterion.question_number }}-add-button"
+                                            class="btn btn-secondary btn-sm"
+                                            data-question-id="{{ subcriterion.question_number }}"
+                                            onclick="addComment(this.id)">Добавить комментарий</button>
+                                    <button type="button"
+                                            id="{{ subcriterion.question_number }}-delete-button"
+                                            class="btn btn-danger btn-sm"
+                                            style="display: none;"
+                                            data-question-id="{{ subcriterion.question_number }}"
+                                            onclick="deleteComment(this.id)">Удалить комментарий</button>
+                                </div>
+                            {% endfor %}
+
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Отправить ответы</button>
+</form>
+
+
+{% endblock %}

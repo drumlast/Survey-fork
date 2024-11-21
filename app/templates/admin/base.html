@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/docs.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/select2.min.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-icons.css') }}" />
+    <script src="{{ url_for('static', filename='script/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/colResizable-1.6.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='script/select2.min.js') }}"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ title }}</title>
+</head>
+<body>
+    <div class="container d-flex flex-column justify-content-center align-items-center pb-lg-5" style="max-width: 1800px;">
+        {% block nav -%}
+            <nav class="navbar navbar-expand-lg bg-body-tertiary">
+                <div class="container-fluid">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="{{ url_for('survey.index') }}">Опросник</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{{ url_for('admin.dashboard') }}">Админка</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{{ url_for('admin.surveys') }}">Опросы</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{{ url_for('admin.view_committees') }}">Комитеты</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{{ url_for('admin.reports') }}">Отчёты</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{{ url_for('admin.view_feedbacks') }}">Сообщения обратной связи</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        {% endblock -%}
+
+        <div id="message"></div>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <ul class=flashes>
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+        {% block content -%}
+        {% endblock -%}
+    </div>
+</body>
+</html>

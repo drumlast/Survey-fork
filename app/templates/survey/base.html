@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/docs.css') }}">
+    <script src="{{ url_for('static', filename='script/bootstrap.bundle.min.js') }}"></script>
+    <title>{{ title }}</title>
+</head>
+<body>
+    <div class="container d-flex flex-column justify-content-center align-items-center pb-lg-5" style="max-width: 1200px;">
+        {% include 'survey/header_nav.html' %}
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class=flashes>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        {% block content -%}
+        {% endblock %}
+    </div>
+</body>
+<script src="{{ url_for('static', filename='script/script.js') }}"></script>
+</html>

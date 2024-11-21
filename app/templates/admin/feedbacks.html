@@ -1,0 +1,26 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+<h1>Сообщения обратной связи</h1>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Имя</th>
+            <th>Email</th>
+            <th>Сообщение</th>
+            <th>Дата отправки</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for feedback in feedbacks %}
+        <tr>
+            <td>{{ feedback.name }}</td>
+            <td>{{ feedback.email }}</td>
+            <td>{{ feedback.message }}</td>
+            <td>{{ feedback.submitted_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

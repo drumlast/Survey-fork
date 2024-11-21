@@ -1,0 +1,38 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+
+<h1>Опросы</h1>
+<div class="p-3 mb-3 border rounded">
+    <div>
+        <form class="mb-3" method="post" action="{{ url_for('admin.surveys') }}">
+        <div class="mb-3">
+            <label for="title" class="form-label">Название нового опроса:</label>
+            <input type="text" class="form-control" name="title" required>
+        </div>
+        <div class="mb-3">
+            <label for="slug" class="form-label">Идентификатор URL (slug):</label>
+            <input type="text" class="form-control" name="slug" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Добавить</button>
+    </form>
+    </div>
+</div>
+
+<div>
+    {% for survey in surveys.surveys %}
+        <div class="card">
+            <div class="card-header">
+                {{ survey.title }} (slug: {{ survey.slug }})
+            </div>
+            <div class="card-body">
+                <p class="card-text">{{ survey.introduction|safe }}</p>
+                <a href="{{ url_for('admin.edit_survey', survey_id=survey.id) }}" class="btn btn-primary">Изменить</a>
+                <a href="{{ url_for('admin.survey_by_id', survey_id=survey.id) }}" class="btn btn-secondary">Просмотр</a>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<script src="{{ url_for('static', filename='script/questions.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends 'admin/base.html' %}
+
+{% block content %}
+{{ super() }}
+    <div>
+        <h2>Данные опросника.</h2>
+        <div class="survey-table" style="font-size: 12px;">
+            {% for directions in survey['data']['directions'] %}
+                <h3 class="text-success">{{ directions['title'] }}</h3>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-center align-middle" rowspan="2">№ п.п.</th>
+                            <th class="text-center align-middle" rowspan="2">№ в.</th>
+                            <th class="text-center align-middle" rowspan="2">Критерий</th>
+                            <th class="text-center align-middle" rowspan="2">Наименование подкритерия</th>
+                            <th class="text-center align-middle" rowspan="2">Вес</th>
+                            <th class="text-center align-middle" rowspan="2">Ранг (ваша оценка)</th>
+                            <th class="text-center align-middle" colspan="4">Уровень цифровой зрелости</th>
+                            <th class="text-center align-middle" rowspan="2">Примечание</th>
+                        </tr>
+                        <tr>
+                            <th class="text-center align-middle">0-1</th>
+                            <th class="text-center align-middle">1-2</th>
+                            <th class="text-center align-middle">2-3</th>
+                            <th class="text-center align-middle">3-4</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for crit in directions['criterions'] %}
+                            {% if crit['question_number'] %}
+                                <tr>
+                                    <th class="text-center align-middle">{{ crit['number'] }}</th>
+                                    <th class="text-center align-middle">{{ crit['question_number'] }}</th>
+                                    <th class="text-center align-middle">{{ crit['title'] }}</th>
+                                    <th class="text-center align-middle"></th>
+                                    <th class="text-center align-middle">{{ crit['weight'] }}</th>
+                                    <th class="text-center align-middle"></th>
+                                    <th class="text-center align-middle"></th>
+                                    <th class="text-center align-middle"></th>
+                                    <th class="text-center align-middle"></th>
+                                    <th class="text-center align-middle"></th>
+                                    {% if crit['question'] %}
+                                        <th class="text-center align-middle">{{ crit['question'] }}</th>
+                                    {% else %}
+                                        <th class="text-center align-middle"></th>
+                                    {% endif %}
+                                </tr>
+                            {% endif %}
+                            {% for sub in crit['subcriterions'] %}
+                                <tr>
+                                    <th class="text-center align-middle"> {{ crit['number'] }} </th>
+                                    {% if crit['question_number'] %}
+                                    {% else %}
+                                        <th class="text-center align-middle">{{ sub['question_number'] }}</th>
+                                        <th class="text-center align-middle">{{ crit['title'] }}</th>
+                                        <th class="text-center align-middle">{{ sub['title'] }}</th>
+                                        <th class="text-center align-middle">{{ sub['weight'] }}</th>
+                                        <th class="text-center align-middle"></th>
+                                        {% for p in sub['puncts'] %}
+                                            <th class="text-center align-middle">{{ p['title'] }}</th>
+                                        {% endfor %}
+                                        {% if sub['note'] %}
+                                            <th class="text-center align-middle">{{ sub['note'] }}</th>
+                                        {% endif %}
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
