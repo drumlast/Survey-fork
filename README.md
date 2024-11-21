@@ -22,8 +22,23 @@ echo \
 $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \  
 sudo tee /etc/apt/sources.list.d/docker.list > /dev/null  
 ```
-
+##### Update repository list:
 `sudo apt-get update`
+
+##### Install the latest version:
+`sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`
+
+### Linux post-install steps for Docker Engine:
+```
+sudo groupadd docker
+```
+```
+sudo usermod -aG docker $USER
+```
+##### Log out and log back in so that your group membership is re-evaluated, then run:
+```
+docker ps
+```
 
 
 ## Установка и настройка вручную.
