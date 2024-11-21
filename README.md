@@ -3,52 +3,31 @@
 
 ## Установка с помощью docker compose
 ### Установка docker engine
-#### Ubuntu
-##### Add Docker's official GPG key:
-```
-sudo apt-get update
-```
-```
-sudo apt-get install ca-certificates curl
-```
-```
-sudo install -m 0755 -d /etc/apt/keyrings
-```
-```
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-```
-```
-sudo chmod a+r /etc/apt/keyrings/docker.asc
-```
+#### Ubuntu:
+https://docs.docker.com/engine/install/ubuntu/
+#### Post-installation steps for Docker Engine:
+https://docs.docker.com/engine/install/linux-postinstall/
 
-##### Add the repository to Apt sources:
+#### Установка git:
 ```
-echo \  
-"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \  
-$(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \  
-sudo tee /etc/apt/sources.list.d/docker.list > /dev/null  
+sudo apt install git
 ```
-##### Update repository list:
+### Скачивание проекта на сервер и его установка:
 ```
-sudo apt-get update
-```
-##### Install the latest version:
-```
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-```
-
-### Linux post-install steps for Docker Engine:
-```
-sudo groupadd docker
+git clone https://github.com/drumlast/Survey-master.git
 ```
 ```
-sudo usermod -aG docker $USER
+cd Survey-master
 ```
-##### Log out and log back in so that your group membership is re-evaluated, then run:
+```
+docker compose up --build -d
+```
+Проверяем, что все контейнеры запустились и работают командой:
 ```
 docker ps
 ```
-
+Переходим по адресу https://ocz.iac.spb.ru/
+![photo](docs/images/web-browser.png)
 
 ## Установка и настройка вручную.
 ### Установка Python
@@ -59,7 +38,7 @@ docker ps
 Скачиваем проект. Это можно сделать прямо из github zip архивом:
 ![фото](docs/images/git-download-zip.png)
 
-После скачивания мы переходим в папку, заранее её разорхивировав.
+После скачивания мы переходим в папку, заранее её разархивировав.
 
 ### Запуск проекта.
 При установке python должен был быть установлен установщик модулей и библиотек pip.
