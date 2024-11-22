@@ -15,7 +15,7 @@ sudo apt install git
 ```
 ### Скачивание проекта на сервер и его установка:
 ```
-git clone https://github.com/drumlast/Survey-master.git
+git clone https://github.com/drumlast/Survey-fork.git
 ```
 ```
 cd Survey-master
