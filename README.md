@@ -18,7 +18,7 @@ sudo apt install git
 git clone https://github.com/drumlast/Survey-fork.git
 ```
 ```
-cd Survey-master
+cd Survey-fork
 ```
 ```
 docker compose up --build -d
