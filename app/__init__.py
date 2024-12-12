@@ -19,6 +19,7 @@ def create_app():
     app.config['SQLALCHEMY_ECHO'] = False
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['REPORTS_FOLDER'] = 'reports'
+    app.config['WTF_CSRF_TIME_LIMIT'] = 3600
 
     db.init_app(app)
     migrate.init_app(app, db)
